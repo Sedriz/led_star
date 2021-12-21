@@ -24,8 +24,6 @@ void setup() {
 void loop() {
   boolean buttonState = digitalRead(BUTTON_PIN);
 
-  Serial.println(buttonState);
-
   if(buttonState == HIGH) {
     if (current_mode >= 6) {
       current_mode = 0;
@@ -34,7 +32,8 @@ void loop() {
       current_mode = current_mode + 1;
     }
     current_led = 0;
-    Serial.println("Changing mode!!");
+    Serial.println("Changing mode to:");
+    Serial.println(current_mode);
   }
 
   switch (current_mode)
@@ -56,6 +55,10 @@ void loop() {
     break;
 
   case 4:
+    star_fill();
+    break;
+
+  case 5:
     star_snake();
     break;
 
@@ -99,8 +102,6 @@ void single_color(CRGB color) {
   }
 }
 
-void christmas_tree() {}
-
 void rainbow() {
   fill_rainbow(leds, NUM_LEDS, 0, 255 / NUM_LEDS);
 }
@@ -118,6 +119,24 @@ void blink_star() {
 }
 
 void star_snake() {
+  if(current_led <= NUM_LEDS + 3) {
+    if(current_led <= NUM_LEDS) {
+      leds[current_led] = CRGB(252, 210, 2);
+     }
+
+    if(current_led >= 0) {
+      leds[current_led -3] = CRGB::Black;
+    }
+     
+    current_led = current_led + 1;
+  }
+  else {
+    current_led = 0;
+    fill_solid(leds, NUM_LEDS, CRGB::Black);
+  }
+}
+
+void star_fill() {
   if(current_led <= NUM_LEDS) {
     leds[current_led] = CRGB(252, 210, 2);
     current_led = current_led + 1;
