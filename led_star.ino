@@ -1,10 +1,9 @@
 #include <FastLED.h>
-#include "Arduino.h"
 #include "local_config.h"
 
-#define NUM_LEDS h_num_led
-#define DATA_PIN h_data_pin
-#define BUTTON_INPUT_PIN h_button_input_pin
+const int NUM_LEDS = h_num_led;
+const int DATA_PIN = h_data_pin;
+const int BUTTON_PIN = h_button_input_pin;
 
 CRGB leds[NUM_LEDS];
 
@@ -14,17 +13,18 @@ unsigned short current_led = 0;
 void setup() {
   Serial.begin(115200);
 
-  pinMode(h_button_input_pin, INPUT);
-
   FastLED.addLeds<WS2813, DATA_PIN, GRB>(leds, NUM_LEDS);
   Serial.println("FastLED activated!");
 
+  pinMode(BUTTON_PIN, INPUT);
 }
 
 //*****************************************************
 
 void loop() {
-  int buttonState = digitalRead(BUTTON_INPUT_PIN);
+  boolean buttonState = digitalRead(BUTTON_PIN);
+
+  Serial.println(buttonState);
 
   if(buttonState == HIGH) {
     if (current_mode >= 6) {
@@ -34,6 +34,7 @@ void loop() {
       current_mode = current_mode + 1;
     }
     current_led = 0;
+    Serial.println("Changing mode!!");
   }
 
   switch (current_mode)
@@ -55,7 +56,7 @@ void loop() {
     break;
 
   case 4:
-    christmas_tree();
+    star_snake();
     break;
 
   case 5:
@@ -72,7 +73,7 @@ void loop() {
   }
   
   FastLED.show();
-  delay(100);
+  delay(400);
 }
 
 void star_light() {
@@ -112,6 +113,7 @@ void blink_star() {
   }
   else {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
+    current_led = 0;
   }
 }
 
